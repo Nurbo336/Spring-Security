@@ -7,6 +7,7 @@ import com.example.test.repository.RoleRepo;
 import com.example.test.repository.UserRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -65,11 +66,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<User> getUsers() {
+
         return userRepo.findAll();
     }
 
     @Override
     public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUserStatus(Status.ACTIVE);
         return userRepo.save(user);
     }
@@ -77,6 +80,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User blockUser(String username) {
         User user = userRepo.findByUsername(username);
+        if (user == null) {
+            throw new NullPointerException("User not found with username: " + username);
+        }
         user.setUserStatus(Status.BLOCKED);
 
 
@@ -86,6 +92,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User unlockUser(String username) {
         User user = userRepo.findByUsername(username);
+        if (user == null) {
+            throw new NullPointerException("User not found with username: " + username);
+        }
         if (user.getUserStatus() == Status.BLOCKED){
 
             user.setUserStatus(Status.ACTIVE);
@@ -98,6 +107,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void deleteUser(String username) {
         User user = userRepo.findByUsername(username);
+        if (user == null) {
+            throw new NullPointerException("User not found with username: " + username);
+        }
         userRepo.delete(user);
+    }
+    @Override
+    public boolean isUserActive(User user) {
+        String username = user.getUsername();
+        User user1 = userRepo.findByUsername(username);
+        return user1 != null && user1.getUserStatus() == Status.ACTIVE;
     }
 }

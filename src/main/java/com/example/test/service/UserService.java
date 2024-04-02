@@ -2,6 +2,7 @@ package com.example.test.service;
 
 import com.example.test.entity.Role;
 import com.example.test.entity.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,4 +23,5 @@ public interface UserService {
     User blockUser(String username);
     User unlockUser(String username);
     void deleteUser(String username);
+    boolean isUserActive(User user);
 }

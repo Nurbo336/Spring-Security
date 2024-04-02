@@ -100,18 +100,23 @@ public class UserController {
     }
 
 
-    @PostMapping("/create")
-    public User createUser(@RequestBody User user){
-        return userService.createUser(user);
+    @PostMapping("user/create")
+    public ResponseEntity<User> createUser(@RequestBody User user){
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/create").toUriString());
+        return ResponseEntity.created(uri).body(userService.createUser(user));
     }
-    @PostMapping("/block/{username}")
-    public User blockUserByUsername(@PathVariable String username){
-        return userService.blockUser(username);
+    @PostMapping("user/block/{username}")
+    public ResponseEntity<User> blockUserByUsername(@PathVariable String username){
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/block/{username}").toUriString());
+        userService.blockUser(username);
+        return ResponseEntity.noContent().location(uri).build();
     }
 
-    @PostMapping("/unlock{username}")
-    public User unlockUserByUsername(@PathVariable String username){
-        return userService.unlockUser(username);
+    @PostMapping("user/unlock/{username}")
+    public ResponseEntity<User >unlockUserByUsername(@PathVariable String username){
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/unlock/{username}").toUriString());
+        return ResponseEntity.ok().location(uri).body(userService.unlockUser(username));
+
     }
     @DeleteMapping("/delete/{username}")
     public void deleteUserByUsername(@PathVariable String username){

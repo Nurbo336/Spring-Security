@@ -26,13 +26,13 @@ public class JwtApplication {
 			userService.saveRole(new Role(null, "ROLE_ADMIN"));
 			userService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
 
-			userService.saveUser(new User(null, "Нурбол", Status.ACTIVE,"nurbol", "12345", new ArrayList<>()));
-			userService.saveUser(new User(null, "Марк",Status.ACTIVE, "mark2", "qwerty", new ArrayList<>()));
-			userService.saveUser(new User(null, "Бэн",Status.ACTIVE, "benben", "1111", new ArrayList<>()));
+			userService.saveUser(new User(null, "Admin", Status.ACTIVE,"admin", "12345", new ArrayList<>()));
+			userService.saveUser(new User(null, "User1",Status.ACTIVE, "user1", "qwerty", new ArrayList<>()));
+			userService.saveUser(new User(null, "User2",Status.ACTIVE, "user2", "1111", new ArrayList<>()));
 
-			userService.addRoleToUser("nurbol", "ROLE_SUPER_ADMIN");
-			userService.addRoleToUser("mark2", "ROLE_USER");
-			userService.addRoleToUser("benben", "ROLE_USER");
+			userService.addRoleToUser("admin", "ROLE_SUPER_ADMIN");
+			userService.addRoleToUser("user1", "ROLE_USER");
+			userService.addRoleToUser("user2", "ROLE_USER");
 		};
 	}
 

@@ -4,6 +4,7 @@ import com.example.test.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,18 +36,22 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeHttpRequests().requestMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
-        http.authorizeHttpRequests().requestMatchers(GET, "/api/user/**").hasAnyAuthority("ROLE_USER");
-        http.authorizeHttpRequests().requestMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
-
-        http.authorizeHttpRequests().requestMatchers(POST, "/api/user/create/**").hasAnyAuthority("ROLE_SUPER_ADMIN");
-        http.authorizeHttpRequests().requestMatchers(POST, "/api/user/block/**").hasAnyAuthority("ROLE_SUPER_ADMIN");
-        http.authorizeHttpRequests().requestMatchers(POST, "/api/user/unlock/**").hasAnyAuthority("ROLE_SUPER_ADMIN");
-        http.authorizeHttpRequests().requestMatchers(DELETE, "/api/user/delete/**").hasAnyAuthority("ROLE_SUPER_ADMIN");
-        http.authorizeHttpRequests().anyRequest().authenticated();
+        http.authorizeRequests()
+                .requestMatchers("/api/login", "/api/token/refresh").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/user/**").hasAnyAuthority("ROLE_USER")
+                .requestMatchers(HttpMethod.POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/user/create/**").hasAnyAuthority("ROLE_SUPER_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/user/block/**").hasAnyAuthority("ROLE_SUPER_ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/user/unlock/**").hasAnyAuthority("ROLE_SUPER_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/user/delete/**").hasAnyAuthority("ROLE_SUPER_ADMIN")
+//                .requestMatchers("/api/**").access("@userService.isUserActive(principal)")
+                .anyRequest().authenticated();
         http.apply(CustomSecurityDetails.customDsl());
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
+
+
 
 }

@@ -13,6 +13,7 @@ import static jakarta.persistence.GenerationType.AUTO;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Role {
     @Id
     @GeneratedValue(strategy = AUTO)
